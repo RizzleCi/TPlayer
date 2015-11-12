@@ -88,6 +88,17 @@ body{
 	margin-top: 3px;
 	background: #C3C3C3;
 }
+.inside span{
+	display: inline-block;
+	float: right;
+	margin-right: -6px;
+	margin-top: -2px;
+	width: 6px;
+	height: 6px;
+	border-radius: 3px;
+	box-shadow: 0 0 5px #2985f2;
+	background: #fefefe;
+}
 .music .now{
 	font-size: 1.5em;
 	font-weight: lighter;
