@@ -25,12 +25,19 @@ var timeControl = function (player,event) {
 	var timeline = document.getElementById('timeline');
 	var timediv = timeline.getElementsByTagName('div')[0];
 	var dot = timediv.getElementsByTagName('span')[0];
-	
+	var time = player.currentTime;
+
 	fulltime.innerHTML = Math.ceil(player.duration);
 	setInterval(function () {
 		nowtime.innerHTML = Math.ceil(player.currentTime);
 		timediv.style.width = player.currentTime/player.duration*100+"%";
 	},300)	
+
+	timeline.onclick = function (event) {
+		time = player.duration * ((event.clientX-this.offsetLeft)/parseInt(this.style.width));
+		player.currentTime = time;
+
+	}
 }
 var voiceControl = function (player,event) {
 	var voice = document.getElementById('voice');
@@ -39,7 +46,6 @@ var voiceControl = function (player,event) {
 	var dot = insidediv.getElementsByTagName('span')[0];
 	insidediv.style.width = sounddiv.style.width;
 	var sound = parseInt(insidediv.style.width)/parseInt(sounddiv.style.width);
-	console.log(sound)
 
 	voice.onclick = function () {
 		if (player.volume) {
@@ -50,10 +56,8 @@ var voiceControl = function (player,event) {
 	}
 
 	sounddiv.onclick = function (event) {
-		sound = (event.clientX-sounddiv.offsetLeft)/parseInt(sounddiv.style.width);
+		sound = (event.clientX-this.offsetLeft)/parseInt(this.style.width);
 		player.volume = sound;
-		insidediv.style.width = sound * parseInt(sounddiv.style.width) + "px";
-		console.log(event.clientX);
-		console.log(sounddiv.offsetLeft);
+		insidediv.style.width = sound * parseInt(this.style.width) + "px";
 	}
 }
