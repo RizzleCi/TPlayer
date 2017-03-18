@@ -1,33 +1,30 @@
-
-
-var myPlayer = (function (window) {
+var createPlayer = (function (window) {
 	var controls = {};
 	var myPlayer = {};
 
 	myPlayer.render = function () {
-		var player = document.getElementById(controls.player);
-		timeInit();		
-		controlBut(player);
-		change(player)
-		//timeControl(player);
-		voiceControl(player);
+		myPlayer.player = document.getElementById(controls.playername);
+		timeInit();
+		controlBut();
+		change()
+		voiceControl();
 	}
 	myPlayer.init = function(argument) {
 		controls = argument;
 		myPlayer.render()
 	}; 	
 	//控制播放的按钮
-	var controlBut = function (player) {
+	var controlBut = function () {
 		var playButton = document.getElementById(controls.playbut);	
 		playButton.addEventListener("click",function () {
-			if (player.paused) {
-				if (player.src) {
-					player.play()
+			if (myPlayer.player.paused) {
+				if (myPlayer.player.src) {
+					myPlayer.player.play()
 				}else changeSong(player);
 				
 				this.innerHTML = "&#xe750;"
 			}else{
-				player.pause();
+				myPlayer.player.pause();
 				this.innerHTML = "&#xe74f;"
 			};
 		},false) 
@@ -36,7 +33,6 @@ var myPlayer = (function (window) {
 	var secToMin = function (sec) {
 		if (typeof sec === "number" && sec === sec) {
 			var min = Math.floor(sec/60);
-			console.log()
 			var newsec = sec%60;
 			if (min<10) {
 				var realmin = "0" + min.toString();
@@ -59,8 +55,8 @@ var myPlayer = (function (window) {
 		nowtime.className = "now pl10";
 
 		var showtime = document.getElementById('showtime');
-		fulltime.innerHTML = secToMin(Math.ceil(player.duration));
-		nowtime.innerHTML = secToMin(Math.ceil(player.currentTime));		
+		fulltime.innerHTML = secToMin(Math.ceil(myPlayer.player.duration));
+		nowtime.innerHTML = secToMin(Math.ceil(myPlayer.player.currentTime));		
 		//console.log(secToMin(80))
 		var span = document.createElement('span');
 		span.innerHTML = "/";
@@ -77,11 +73,11 @@ var myPlayer = (function (window) {
 		timeline.appendChild(timediv);
 		timeline.appendChild(dot);
 		
-		var time = player.currentTime;
+		var time = myPlayer.player.currentTime;
 		setInterval(function () {
-			nowtime.innerHTML = secToMin(Math.ceil(player.currentTime)) ;
-			timediv.style.width = player.currentTime/player.duration*100+"%";
-			dot.style.left = player.currentTime/player.duration*parseInt(timeline.clientWidth)+"px";
+			nowtime.innerHTML = secToMin(Math.ceil(myPlayer.player.currentTime)) ;
+			timediv.style.width = myPlayer.player.currentTime/myPlayer.player.duration*100+"%";
+			dot.style.left = myPlayer.player.currentTime/myPlayer.player.duration*parseInt(timeline.clientWidth)+"px";
 		},300)	
 
 
@@ -89,8 +85,8 @@ var myPlayer = (function (window) {
 			var dot = this.getElementsByTagName('span')[0];
 
 			document.onmousemove = function (event) {
-				time = player.duration * ((event.clientX-timeline.offsetLeft)/parseInt(timeline.style.width));
-				player.currentTime = time;		
+				time = myPlayer.player.duration * ((event.clientX-timeline.offsetLeft)/parseInt(timeline.style.width));
+				myPlayer.player.currentTime = time;		
 			}
 			document.onmouseup=function (){
 				document.onmousemove=null;
@@ -99,7 +95,7 @@ var myPlayer = (function (window) {
 		})
 	}
 
-	var voiceControl = function (player,event) {
+	var voiceControl = function (event) {
 		var voice = document.getElementById(controls.soundbut);
 		var sounddiv = document.getElementById(controls.sounddiv);
 		var insidediv = document.createElement('div');
@@ -113,10 +109,10 @@ var myPlayer = (function (window) {
 		var sound = parseInt(insidediv.style.width)/parseInt(sounddiv.style.width);
 
 		voice.onclick = function () {
-			if (player.volume) {
-				player.volume = 0;
+			if (myPlayer.player.volume) {
+				myPlayer.player.volume = 0;
 			}else{
-				player.volume = sound;
+				myPlayer.player.volume = sound;
 			};
 		}
 
@@ -125,7 +121,7 @@ var myPlayer = (function (window) {
 
 				if (event.clientX>sounddiv.offsetLeft && event.clientX<sounddiv.offsetLeft+parseInt(sounddiv.style.width)) {
 					sound = (event.clientX-sounddiv.offsetLeft)/parseInt(sounddiv.style.width);
-					player.volume = sound;
+					myPlayer.player.volume = sound;
 					insidediv.style.width = sound * parseInt(sounddiv.style.width) + "px";	
 					dot.style.left = sound * parseInt(sounddiv.style.width) + "px";			
 				};
@@ -142,14 +138,14 @@ var myPlayer = (function (window) {
 		// }
 	}	
 	//切换歌曲按钮
-	var change = function (player) {
+	var change = function () {
 		var button = document.getElementById(controls.changeBut);
 		button.onclick = function () {
-			changeSong(player)
+			changeSong()
 		}
 	}
-	var changeSong = function (player) {
-		var oldsong = player.src;
+	var changeSong = function () {
+		var oldsong = myPlayer.player.src;
 		var len = controls.song.length;
 		var newsong;
 		var loc = window.location.href;
@@ -173,36 +169,33 @@ var myPlayer = (function (window) {
 			};
 		}else{newsong = controls.song[0]};
 
-		player.src = 'songs/'+newsong+'.mp3';
+		myPlayer.player.src = 'songs/'+newsong+'.mp3';
 		console.log(newsong)
-		getLrc(newsong,player);
-		player.play();
-		
+		getLrc(newsong).then(lyric => rollLrc(lyric));
+		myPlayer.player.play();
 	}
 
-	var getLrc = function (name,player) {
-	    var xhr = new XMLHttpRequest();
-	    xhr.open('GET', '../songs/'+name+'.lrc', true);
-	    xhr.send();
-	    xhr.onreadystatechange = function () {
-	    	if (xhr.readyState == 4 && xhr.status == 200) {
-	    		var lyric = lrcobj(xhr.responseText);
-	    		rollLrc(lyric,player);
-	    		//console.log(lyric)
-	    	};
-	    };
+	var getLrc = function (name) {
+		return new Promise(function(resolve, reject){
+		    var xhr = new XMLHttpRequest();
+		    xhr.open('GET', '../songs/'+name+'.lrc', true);
+		    xhr.send();
+		    xhr.onreadystatechange = function () {
+		    	if (xhr.readyState == 4 && xhr.status == 200) {
+		    		var lyric = lrcobj(xhr.responseText);
+		    		resolve(lyric);
+		    	};
+		    };
+		})
 	}
 
 	var lrcobj = function (lrc) {
-		//这里的正则都是自己写的
 		var lrcs = lrc.split("/n");
 		var obj = [];
 		var value = [];
 		for (var i = 0; i < lrcs.length; i++) {
 			var reg = /\[[0-9][0-9]:[0-9][0-9]\.[0-9][0-9]\].*/g;
-			//var valuereg = 
 			value = lrcs[i].match(reg);
-			//console.log(value)
 		};
 		for (var i = 0; i < value.length; i++) {
 			var timereg = /\[[0-9][0-9]\:[0-9][0-9]\.[0-9][0-9]\]/g;
@@ -213,18 +206,15 @@ var myPlayer = (function (window) {
 			var min = parseInt(timew.match(/[0-9][0-9]/)[0]);
 			var sec = parseFloat(timew.match(/[0-9][0-9]\.[0-9][0-9]/i)[0])
 			var trueTime = Math.round(min*60+sec);
-			//console.log(words);
 			if (words) {
 				obj.push([trueTime,words])
 			};
 			
 		};
-		//console.log(obj);
 		return obj;
-
 	}
 
-	var rollLrc = function (lrc,player) {
+	var rollLrc = function (lrc) {
 		var lrcdiv = document.getElementById('lrc');
 		var lrcul = lrcdiv.getElementsByTagName('ul')[0];
 		lrcul.innerHTML = "";
@@ -237,19 +227,16 @@ var myPlayer = (function (window) {
 		}
 		var top = lrctop(lrc);
 		lrcul.style.top = "200px"
-		player.ontimeupdate = function () {
-			var time = Math.round(player.currentTime);
+		myPlayer.player.ontimeupdate = function () {
+			var time = Math.round(myPlayer.player.currentTime);
 			var newtext = lrcdiv.getElementsByClassName('a'+time)[0];
 			var now = lrcdiv.getElementsByClassName('active')[0];		
 
 			for (var i = 0; i < lrc.length; i++) {
 				if (lrc[i][0] == time) {
-					//console.log (now)
 					if (newtext && newtext != now) {
-						//这里参考了网上的removeClass
 						var reg = /active/;			
 						newtext.className += ' active';
-						//console.log(newtext)
 						if (now) {
 				    		now.className = now.className.replace(reg,'');
 				    		lrcul.style.top = 200-top[time]+"px";
@@ -275,8 +262,8 @@ var myPlayer = (function (window) {
 	return myPlayer;
 })(window)
 
-document.addEventListener("DOMContentLoaded",myPlayer.init({
-	player : "player",
+document.addEventListener("DOMContentLoaded",createPlayer.init({
+	playername : "player",
 	playbut : "playbut",
 	soundbut : "voice",
 	sounddiv : "sound",
