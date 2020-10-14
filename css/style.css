@@ -131,7 +131,7 @@ body{
   transition: 0.5s;
 }
 .lrc .active{
-  color: #bb1414;
-  font-size: 1.1em;
+	color: #bb1414;
+	line-height: 35px;
   text-shadow: 0 0 1px #f16935;
 }
