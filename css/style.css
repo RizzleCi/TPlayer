@@ -111,9 +111,11 @@ body{
   background-color: #2985f2;
 }
 .lrc{
-  width: 100%;
+	width: 90%;
+	box-sizing: border-box;
   height: 360px;
-  padding: 20px;
+	margin: 20px auto;
+	padding: 20px;
   background: rgba(0,0,0,0.4);
   font-size: 0.9em;
   color: #fff;
@@ -122,7 +124,6 @@ body{
   position: relative;
 }
 .lrc ul{
-  top: 200px;
   transition: 0.7s;
   position: relative;
 }
@@ -130,7 +131,7 @@ body{
   transition: 0.5s;
 }
 .lrc .active{
-  color: rgba(172,83,232,1);
+  color: #bb1414;
   font-size: 1.1em;
-  text-shadow: 0 0 1px #9E8BA7;
+  text-shadow: 0 0 1px #f16935;
 }
