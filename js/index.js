@@ -98,6 +98,10 @@ var createPlayer = (function (window) {
   return myPlayer;
 })(window)
 
+const bg = Math.ceil(Math.random()*4)
+
+document.body.style=`background-image: url(img/${bg}.jpg)`
+
 const id = location.search.match(/\?id\=(.*)(&|$)/)[1]
 document.addEventListener("DOMContentLoaded",createPlayer.init({
   playername : "player",

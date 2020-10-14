@@ -16,18 +16,18 @@
   padding: 0 5px; 
 }
 body{
-  /* background-image: url(../img/back.jpg);
   background-repeat: no-repeat;
-  background-size: 100% 100%; */
+	background-size: cover;
+	background-position: center;
 }
 .pl10{
   padding-left: 10px;
 }
-.fl{
-  float: left;
-}
-.fr{
-  float: right;
+#player {
+	width: 90%;
+	margin: 0 auto;
+	display: block;
+	opacity: 0.7;
 }
 .container{
   margin: 20px auto;
@@ -113,11 +113,11 @@ body{
 .lrc{
 	width: 90%;
 	box-sizing: border-box;
-  height: 360px;
 	margin: 20px auto;
 	padding: 20px;
-  background: rgba(0,0,0,0.4);
-  font-size: 0.9em;
+  background: rgba(0,0,0,0.25);
+	font-size: 16px;
+	line-height: 30px;
   color: #fff;
   text-align: center;
   overflow: hidden;
