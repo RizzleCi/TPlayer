@@ -74,8 +74,8 @@ var createPlayer = (function (window) {
   myPlayer.render = function () {
     myPlayer.player = document.getElementById(controls.playername);
     myPlayer.player.src = 'songs/'+ controls.song +'.mp3';
+    console.log(controls.song)
     rollLrc(lycs[controls.song])
-
   }
   myPlayer.init = function(argument) {
     controls = argument;
@@ -116,9 +116,11 @@ const bg = Math.ceil(Math.random()*4)
 
 document.body.style=`background-image: url(img/${bg}.jpg)`
 
-const id = location.search.match(/\?id\=(.*)(&|$)/)[1]
+const match = location.search.match(/\?id\=(.*)(&|$)/)
+const id = match ? match[1] : Math.ceil(Math.random()*6)
+
 document.addEventListener("DOMContentLoaded",createPlayer.init({
   playername : "player",
-  song : id
+  song : id 
 }),false )  
 
